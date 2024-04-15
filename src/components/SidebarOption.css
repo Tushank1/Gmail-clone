@@ -23,6 +23,7 @@
 .SidebarOption p {
     display: none;
     font-weight: 300;
+    margin-left: 10px;
 }
 
 .sidebar--active p {
