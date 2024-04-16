@@ -3,53 +3,71 @@ import "./SendMail.css";
 import CloseIcon from "@mui/icons-material/Close";
 import { useForm } from "react-hook-form";
 import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { closeSendMessage } from "../features/mailSlice";
+import { db } from "../firebase";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 
 function SendMail() {
-  const { register, handleSubmit, watch, errors } = useForm();
+  const dispatch = useDispatch();
 
-  const onSubmit = (data) => console.log(data);
-  //   const onError = (errors, e) => console.log(errors, e);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  //   const onSubmit = async (data) => {
-  //     try {
-  //       // Simulate an asynchronous operation, such as sending data to a server
-  //       await new Promise((resolve) => setTimeout(resolve, 1000)); // This is just a placeholder for your actual async operation
-  //       console.log("Data submitted successfully:", data);
-  //       // Here you can handle the response, e.g., show a success message or redirect the user
-  //     } catch (error) {
-  //       console.error("Error submitting data:", error);
-  //       // Handle errors, e.g., show an error message
-  //     }
-  //   };
+  const onSubmit = (data) => {
+    console.log(data);
+    db.collection("emails").add({
+      To: data.To,
+      Subject: data.Subject,
+      Message: data.Message,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    dispatch(closeSendMessage());
 
+    reset();
+  };
   return (
     <div className="sendMail">
       <div className="sendMail_header">
         <h3>New Message</h3>
-        <CloseIcon className="sendMail_close" />
+        <CloseIcon
+          onClick={() => dispatch(closeSendMessage())}
+          className="sendMail_close"
+        />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           name="To"
           placeholder="To"
-          type="text"
-          {...register("To", { register: true })}
+          type="email"
+          {...register("To", { required: "To is Required" })}
         />
+        {errors.To && <p className="sendMail_error">{errors.To.message}</p>}
         <input
           name="Subject"
           placeholder="Subject"
           type="text"
-          {...register("Subject", { register: true })}
+          {...register("Subject", { required: "Subject is Required" })}
         />
-        <input
-          {...register("Message", { register: true })}
+        {errors.Subject && (
+          <p className="sendMail_error">{errors.Subject.message}</p>
+        )}
+        <textarea
+          {...register("Message", { required: "Message is Required" })}
           name="Message"
           placeholder="Message..."
           type="text"
           className="sendMail_message"
         />
-
+        {errors.Message && (
+          <p className="sendMail_error">{errors.Message.message}</p>
+        )}
         <div className="sendMailOption">
           <Button
             className="sendMail_send"

@@ -14,9 +14,12 @@ import { useNavigate } from "react-router-dom";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import PrintIcon from "@mui/icons-material/Print";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { useSelector } from "react-redux";
+import { selectedOpenMail } from "../features/mailSlice";
 
 function Mail() {
   const navigate = useNavigate();
+  const selectedMail = useSelector(selectedOpenMail);
 
   return (
     <div className="mail">
@@ -64,13 +67,13 @@ function Mail() {
       </div>
       <div className="mail_body">
         <div className="mail_bodyHeader">
-          <h2>Subject</h2>
+          <h2>{selectedMail?.subject}</h2>
           <LabelImportantIcon className="mail_important" />
-          <p>Title</p>
-          <p className="mail_time">10pm</p>
+          <p>{selectedMail?.title}</p>
+          <p className="mail_time">{selectedMail?.time}</p>
         </div>
         <div className="mail_message">
-          <p>This is a message</p>
+          <p>{selectedMail?.description}</p>
         </div>
       </div>
     </div>

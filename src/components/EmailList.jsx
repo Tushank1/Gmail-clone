@@ -13,8 +13,26 @@ import PeopleIcon from "@mui/icons-material/People";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import Section from "./Section";
 import EmailRow from "./EmailRow";
+import { useState } from "react";
+import { useEffect } from "react";
+import { db } from "../firebase";
 
 function EmailList() {
+  const [emails, setEmails] = useState([]);
+
+  useEffect(() => {
+    db.collection("emails")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setEmails(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );
+  });
+
   return (
     <div className="emailList">
       <div className="emailList_setting">
@@ -52,6 +70,16 @@ function EmailList() {
       </div>
 
       <div className="emailList_List">
+        {emails.map(({ id, data: { To, Subject, Message, timestamp } }) => (
+          <EmailRow
+            id={id}
+            key={id}
+            title={To}
+            subject={Subject}
+            description={Message}
+            time={new Date(timestamp?.seconds * 1000).toUTCString()}
+          />
+        ))}
         <EmailRow
           title="Twitch"
           subject="Hey follow me"

@@ -1,0 +1,27 @@
+.login {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    background-color: white;
+}
+
+.login_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* width: 50%; */
+}
+
+.login_container img {
+    object-fit: contain;
+    height: 120px;
+}
+
+.login_container Button {
+    height: 40px;
+    width: 100%;
+    margin-top: 30px;
+    font-size: 800;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
